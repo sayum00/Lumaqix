@@ -1,4 +1,3 @@
-
 import os
 import time
 import hmac
@@ -24,7 +23,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 WEBAPP_URL = os.getenv("WEBAPP_URL", "http://localhost:8000")
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(file).resolve().parent
 WEB_DIR = BASE_DIR / "web"
 DB_PATH = BASE_DIR / "lumaqix.db"
 
@@ -167,7 +166,6 @@ def create_or_get_user(user, start_param=None):
             invited_by = None
 
     now = int(time.time())
-
     conn.execute(
         """
         INSERT INTO users
@@ -358,7 +356,6 @@ async def api_daily(request: Request):
         remaining = 86400 - (now - row["last_daily"])
 
         conn.close()
-
         return {
             "ok": False,
             "claimed": False,
@@ -369,7 +366,7 @@ async def api_daily(request: Request):
     conn.execute(
         """
         UPDATE users
-        SET balance = balance + 100,
+        SET balance = balance + 10,
             last_daily = ?
         WHERE telegram_id = ?
         """,
@@ -445,7 +442,7 @@ app.mount(
 # START SERVER
 # =========================
 
-if __name__ == "__main__":
+if name == "main":
     import threading
     import uvicorn
 
@@ -464,5 +461,4 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=int(os.getenv("PORT", "8000"))
     )
-```
-    
+`
