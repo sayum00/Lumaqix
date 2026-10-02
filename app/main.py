@@ -366,7 +366,7 @@ async def api_daily(request: Request):
     conn.execute(
         """
         UPDATE users
-        SET balance = balance + 10,
+        SET balance = balance + 100,
             last_daily = ?
         WHERE telegram_id = ?
         """,
