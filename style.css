@@ -1,0 +1,75 @@
+:root {
+  font-family: Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #0b0f14;
+  color: #f5f7fa;
+}
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 16px;
+}
+.card {
+  background: #151b23;
+  border: 1px solid #26303d;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.hero {
+  text-align: center;
+  padding: 28px 20px;
+}
+.logo {
+  width: 64px;
+  height: 64px;
+  margin: auto;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  font-weight: 800;
+  background: #8b5cf6;
+}
+h1 { margin: 12px 0 4px; }
+h2 { margin-top: 0; }
+p { color: #aab4c0; }
+.balance {
+  font-size: 42px;
+  font-weight: 800;
+  margin-top: 18px;
+}
+.balance small {
+  font-size: 14px;
+  color: #8f9baa;
+}
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #8b5cf6;
+  color: white;
+}
+button:disabled {
+  opacity: .55;
+}
+#message {
+  margin-top: 10px;
+  color: #9fe870;
+  min-height: 20px;
+}
+.rank {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #252d37;
+}
+.rank:last-child { border-bottom: 0; }
