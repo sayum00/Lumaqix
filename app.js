@@ -1,0 +1,6 @@
+const tg=Telegram.WebApp;tg.ready();tg.expand();const initData=tg.initData;let me;
+async function req(p,m='POST'){let r=await fetch(p,{method:m,headers:{'Content-Type':'application/json'},body:m==='POST'?JSON.stringify({init_data:initData}):undefined});let d=await r.json();if(!r.ok)throw Error(d.detail||'Error');return d}
+async function load(){try{me=await req('/api/me');render()}catch(e){tg.showAlert(e.message)}}function render(){user.textContent='👤 '+(me.first_name||'User');balance.textContent=me.balance}
+daily.onclick=async()=>{try{let d=await req('/api/daily');me.balance=d.balance;render();tg.showAlert('🎁 +100 points added!')}catch(e){tg.showAlert(e.message)}};
+invite.onclick=()=>{let link='https://t.me/LumaqixBot?startapp='+me.id;tg.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent('Join Lumaqix 🚀'))};
+board.onclick=async()=>{let a=await req('/api/leaderboard','GET');leaders.innerHTML=a.map((x,i)=>`<p>${i+1}. ${x.first_name||x.username||'User'} — ${x.balance}</p>`).join('')};load();
