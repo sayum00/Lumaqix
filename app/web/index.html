@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lumaqix</title>
+  <link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card hero">
+      <div class="logo">L</div>
+      <h1>Lumaqix</h1>
+      <p>Telegram Mini App</p>
+      <div class="balance"><span id="balance">0</span><small> points</small></div>
+    </section>
+
+    <section class="card">
+      <h2>🎁 Daily Bonus</h2>
+      <p>Claim your daily +100 points.</p>
+      <button id="dailyBtn">Claim +100</button>
+      <div id="message"></div>
+    </section>
+
+    <section class="card">
+      <h2>👥 Invite Friends</h2>
+      <p>Invite friends and get <b>+500 points</b> for each new user.</p>
+      <button id="shareBtn">Share Invite Link</button>
+    </section>
+
+    <section class="card">
+      <h2>🏆 Leaderboard</h2>
+      <div id="leaderboard">Loading...</div>
+    </section>
+  </main>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="/web/app.js"></script>
+</body>
+</html>
