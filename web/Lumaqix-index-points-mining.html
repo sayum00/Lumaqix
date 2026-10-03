@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lumaqix</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#06101d;color:#fff;font-family:system-ui,-apple-system,sans-serif}
+.wrap{max-width:560px;margin:auto;padding:14px 14px 88px}.screen{display:none}.screen.active{display:block}
+.card{background:#0c1a2b;border:1px solid #203a58;border-radius:20px;padding:16px;margin:10px 0}
+.hero{background:linear-gradient(135deg,#12335b,#0b1b30)}.logo{font-size:12px;color:#8fa9c4;font-weight:800;letter-spacing:2px}
+.name{font-size:24px;font-weight:900;margin-top:5px}.muted{color:#8fa4bb;font-size:12px}.balance{font-size:34px;font-weight:950;margin-top:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{width:100%;border:0;border-radius:14px;padding:14px;color:#fff;background:#173451;font-weight:850;font-size:14px}
+.blue{background:#176bd1}.green{background:#15945b}.orange{background:#a76b13}.danger{background:#8f2934}
+.row{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #1d3148}.row:last-child{border-bottom:0}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#081525;border-radius:15px;padding:13px}.big{font-size:21px;font-weight:900;margin-top:4px}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #294766;background:#071321;color:#fff;margin:6px 0;font-size:15px}
+.copy{word-break:break-all;background:#071321;border-radius:12px;padding:11px;margin-top:8px}.ok{color:#63dfa0}.warn{color:#ffd166}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#081525;border-top:1px solid #203a58;display:flex;justify-content:center;z-index:10}
+.navin{max-width:560px;width:100%;display:grid;grid-template-columns:repeat(4,1fr)}.nav button{background:none;border:0;color:#7f94aa;padding:11px 4px;font-size:11px;font-weight:800}.nav button.on{color:#fff}
+.title{font-size:22px;font-weight:900}.back{background:none;border:0;color:#9db4ca;padding:0 0 10px;font-size:14px}
+.progress{height:9px;background:#071321;border-radius:20px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:#18a66b}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section id="home" class="screen active">
+  <div class="card hero"><div class="logo">LUMAQIX</div><div class="name" id="name">Loading…</div><div class="muted">USD Balance</div><div class="balance">$<span id="balance">0.00</span></div></div>
+  <div class="statgrid">
+    <div class="stat"><div class="muted">Points</div><div class="big" id="points">0</div></div>
+    <div class="stat"><div class="muted">Mining USD</div><div class="big">$<span id="mining">0.00</span></div></div>
+  </div>
+  <div class="card">
+    <b>⛏️ Mining</b><div class="muted" style="margin-top:5px">Your Points increase your Mining Power. Mining earnings are separate from Points.</div>
+    <div class="row"><span>Mining Power</span><b id="power">0</b></div>
+    <div class="row"><span>Rate</span><b id="rate">0.00/day</b></div>
+    <div class="row"><span>Last update</span><b id="lastmine">—</b></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+  <div class="card">
+    <b>🎁 Daily Reward</b><div class="muted" style="margin-top:5px">Claim once every 24 hours. Reward is Points only.</div>
+    <button class="btn orange" style="margin-top:10px" onclick="claimDaily()">Claim Points</button><div id="dailyMsg"></div>
+  </div>
+  <div class="grid">
+    <button class="btn blue" onclick="go('deposit')">➕ Deposit</button>
+    <button class="btn green" onclick="go('withdraw')">💸 Withdraw</button>
+  </div>
+</section>
+
+<section id="deposit" class="screen"><button class="back" onclick="go('home')">← Back</button><div class="title">Top up USDT</div><div class="card"><div class="muted">Minimum deposit is controlled by the server.</div><input id="damt" type="number" min="0" step="0.01" placeholder="USD amount"><button class="btn blue" onclick="deposit()">Create Payment</button><div id="dres"></div></div></section>
+
+<section id="withdraw" class="screen"><button class="back" onclick="go('home')">← Back</button><div class="title">Withdraw USDT</div><div class="card"><div class="muted">Only USD Balance can be withdrawn. Points cannot be withdrawn.</div><input id="wamt" type="number" min="0" step="0.01" placeholder="USD amount"><input id="waddr" placeholder="BSC / BEP-20 wallet address"><button class="btn green" onclick="withdraw()">Submit Withdrawal</button><div id="wres"></div></div></section>
+
+<section id="friends" class="screen"><button class="back" onclick="go('home')">← Back</button><div class="title">Friends</div><div class="card"><div class="row"><span>Invited</span><b id="fcount">0</b></div><div class="row"><span>Referral earnings</span><b>$<span id="fearn">0.00</span></b></div><div class="row"><span>Commission</span><b id="fcomm">0%</b></div><div class="muted">Your referral link</div><div class="copy" id="flink">—</div><button class="btn blue" style="margin-top:10px" onclick="copyRef()">Copy link</button></div></section>
+
+<section id="gifts" class="screen"><button class="back" onclick="go('home')">← Back</button><div class="title">Points & Mining</div><div class="card"><div class="row"><span>Points</span><b id="gpoints">0</b></div><div class="row"><span>Mining Power</span><b id="gpower">0</b></div><div class="row"><span>Mining USD</span><b>$<span id="gmining">0.00</span></b></div><div class="muted" style="margin-top:10px">Points are non-withdrawable and are never converted directly to USD.</div></div></section>
+
+<section id="account" class="screen"><button class="back" onclick="go('home')">← Back</button><div class="title">Account</div><div class="card"><div class="row"><span>Name</span><b id="aname">—</b></div><div class="row"><span>Username</span><b id="auser">—</b></div><div class="row"><span>USD Balance</span><b>$<span id="abal">0.00</span></b></div><div class="row"><span>Points</span><b id="apoints">0</b></div></div></section>
+</div>
+
+<div class="nav"><div class="navin">
+<button id="nh" class="on" onclick="go('home')">⌂<br>Home</button>
+<button id="nf" onclick="go('friends')">👥<br>Friends</button>
+<button id="ng" onclick="go('gifts')">🎁<br>Points</button>
+<button id="na" onclick="go('account')">♙<br>Account</button>
+</div></div>
+
+<script>
+const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();
+const init=tg?.initData||'';const H={'Content-Type':'application/json','X-Telegram-Init-Data':init};
+const $=id=>document.getElementById(id), m=n=>Number(n||0).toFixed(2);
+async function api(p,o={}){try{const r=await fetch(p,{...o,headers:{...H,...(o.headers||{})}});return await r.json()}catch(e){return {ok:false,error:'Network error'}}}
+function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));({home:'nh',friends:'nf',gifts:'ng',account:'na'}[id]&&$( ({home:'nh',friends:'nf',gifts:'ng',account:'na'}[id]) ).classList.add('on'));load()}
+async function load(){
+ let x=await api('/api/me');
+ if(x.ok){const u=x.user||{};$('name').textContent=u.first_name||u.username||'User';$('balance').textContent=m(u.balance);$('points').textContent=Number(u.points||0).toLocaleString();$('mining').textContent=m(u.mining_balance);$('power').textContent=Number(u.mining_power||0).toFixed(2);$('rate').textContent=m(u.mining_daily_rate)+' / day';$('lastmine').textContent=u.last_mining_at||'—';$('bar').style.width=Math.min(100,Number(u.points||0)%1000/10)+'%';$('gpoints').textContent=Number(u.points||0).toLocaleString();$('gpower').textContent=Number(u.mining_power||0).toFixed(2);$('gmining').textContent=m(u.mining_balance);$('aname').textContent=((u.first_name||'')+' '+(u.last_name||'')).trim()||'User';$('auser').textContent=u.username?'@'+u.username:'—';$('abal').textContent=m(u.balance);$('apoints').textContent=Number(u.points||0).toLocaleString()}
+ let r=await api('/api/referral');if(r.ok){$('fcount').textContent=r.count||0;$('fearn').textContent=m(r.earnings);$('fcomm').textContent=(r.commission_percent||0)+'%';$('flink').textContent=r.referral_link||'—';}
+}
+async function claimDaily(){let x=await api('/api/daily',{method:'POST',body:'{}'});$('dailyMsg').innerHTML=x.ok?'<p class="ok">+'+Number(x.points||0).toLocaleString()+' Points 🎉</p>':'<p class="warn">'+(x.remaining?'Already claimed for today.':(x.error||'Unavailable'))+'</p>';load()}
+async function deposit(){let x=await api('/api/deposit',{method:'POST',body:JSON.stringify({amount:$('damt').value})});$('dres').innerHTML=x.ok?'<p class="ok">Send exactly <b>'+x.payment.pay_amount+' '+x.payment.pay_currency+'</b></p><div class="copy">'+x.payment.pay_address+'</div><div class="muted">Payment ID: '+x.payment.payment_id+'</div>':'<p class="warn">'+(x.error||'Unable to create payment')+'</p>'}
+async function withdraw(){let x=await api('/api/withdraw',{method:'POST',body:JSON.stringify({amount:$('wamt').value,address:$('waddr').value})});$('wres').innerHTML=x.ok?'<p class="ok">Withdrawal '+x.status+'</p>':'<p class="warn">'+(x.error||'Unable to submit withdrawal')+'</p>';load()}
+function copyRef(){navigator.clipboard?.writeText($('flink').textContent).then(()=>alert('Referral link copied')).catch(()=>alert($('flink').textContent))}
+load();
+</script>
+</body></html>
