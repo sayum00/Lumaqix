@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lumaqix</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#060915;--panel:#111522;--panel2:#151a2a;--line:#23293a;--text:#f5f6fb;--muted:#9298aa;--blue:#3182f6;--green:#18c98b;--pink:#f02b98}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:680px;margin:auto;padding:16px 16px 98px}
+.screen{display:none}.screen.active{display:block}
+.topline{display:flex;align-items:center;gap:12px;margin:4px 0 18px}
+.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:4px solid var(--blue);background:#20263a;display:grid;place-items:center;font-weight:900;font-size:22px}
+.profile-name{font-size:23px;font-weight:900;line-height:1.15}
+.handle{color:var(--muted);font-size:14px;margin-top:3px}
+.level{display:inline-block;margin-top:8px;padding:6px 13px;border-radius:18px;background:#54114d;color:#ff4cb2;font-weight:800;font-size:13px}
+.coin-card{background:linear-gradient(135deg,#121625,#101321);border:1px solid #24406d;border-radius:28px;padding:24px 22px;margin-bottom:14px}
+.coin-label{font-size:18px;color:#a1a5b4;margin-left:70px}
+.coin-row{display:flex;align-items:center;gap:16px}
+.coin-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4a0,#e3a728 45%,#7b4b0c 90%);border:2px solid #ffd96c;color:#7a4b08;font-size:28px;font-weight:900;box-shadow:0 4px 16px #0008}
+.coin-value{font-size:48px;font-weight:950;line-height:1}
+.coin-unit{font-size:22px;color:#a1a5b4;font-weight:800}
+.coin-rate{color:#9fa5b7;font-size:16px;margin-top:8px;margin-left:74px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:22px 20px;min-height:118px}
+.stat.green{border-color:#0c5947;background:#081a1b}
+.stat.pink{border-color:#5b1a55;background:#1b0b1c}
+.stat-label{color:#999eaf;font-size:17px;line-height:1.15}
+.stat.green .stat-label{color:#20d697}.stat.pink .stat-label{color:#ff48b0}
+.stat-value{font-size:36px;font-weight:950;margin-top:7px;letter-spacing:-1px}
+.menu{background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:6px 28px;margin-top:28px}
+.menu-row{display:flex;align-items:center;gap:17px;padding:19px 0;border-bottom:1px solid #252a39;min-height:67px}
+.menu-row:last-child{border-bottom:0}
+.menu-icon{width:27px;color:#3388ff;font-size:25px;text-align:center}
+.menu-title{font-size:18px;font-weight:650;flex:1}
+.chev{color:#9298aa;font-size:27px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0}
+.row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.muted{color:var(--muted);font-size:13px}
+.big{font-size:28px;font-weight:900}
+.btn{width:100%;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:850;margin-top:10px}
+.blue{background:#236fe0}.greenbtn{background:#149a68}.pinkbtn{background:#e72b91}
+input{width:100%;padding:14px;border-radius:14px;border:1px solid #33405b;background:#090e1a;color:#fff;margin-top:8px;outline:none}
+.title{font-size:25px;font-weight:900;margin:8px 0 14px}
+.back{background:none;border:0;color:#9ba2b5;padding:0 0 8px;font-weight:700}
+.nav{position:fixed;left:0;right:0;bottom:0;height:76px;background:#111522;border-top:1px solid #222839;z-index:20}
+.navin{max-width:680px;margin:auto;height:100%;display:grid;grid-template-columns:repeat(6,1fr)}
+.nav button{background:none;border:0;color:#8e95a8;font-size:10px;font-weight:750;padding:8px 2px 5px}
+.nav button .ico{display:block;font-size:24px;line-height:28px;margin-bottom:3px}
+.nav button.on{color:#f7f8fb}
+.notice{padding:11px 13px;border-radius:13px;background:#101827;color:#9fa7ba;font-size:13px;margin-top:10px}
+.deposit-detail{background:#171b24;border:1px solid #252b38;border-radius:24px;padding:20px;margin-top:14px}.deposit-head{display:flex;align-items:center;gap:12px;padding-bottom:18px;border-bottom:1px solid #292f3b}.usdt-logo{width:42px;height:42px;border-radius:50%;background:#20b486;display:grid;place-items:center;color:#fff;font-weight:900;font-size:22px}.deposit-name{font-size:18px;font-weight:900}.deposit-sub{color:#8f96a7;font-size:13px;margin-top:3px}.pay-row{display:flex;justify-content:space-between;gap:12px;padding:16px 0 6px;font-size:15px}.pay-value{font-weight:900}.pay-value.green{color:#28c982}.address-title{color:#8f96a7;font-size:14px;font-weight:700;margin:18px 0 8px}.address-box{background:#222630;border-radius:18px;padding:16px}.address-text{font-weight:800;font-size:15px;line-height:1.45;word-break:break-all}.copy-address{width:100%;border:0;border-radius:16px;background:#4388ed;color:#fff;font-weight:900;padding:14px;margin-top:14px;font-size:15px}.deposit-note{color:#8f96a7;font-size:13px;line-height:1.5;margin:16px 0}.deposit-status{background:#222630;border-radius:18px;padding:18px;text-align:center}.status-title{font-weight:900;font-size:16px}.status-sub{color:#8f96a7;font-size:13px;margin-top:8px}.status-success{color:#28c982;font-weight:900;font-size:17px}.status-spinner{width:18px;height:18px;border:3px solid #3b4353;border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:-4px;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}
+.ok{color:#42e1a0}.warn{color:#ffd166}
+@media(max-width:390px){
+ .coin-value{font-size:42px}.stat-value{font-size:31px}.statgrid{gap:10px}.stat{padding:18px 14px}.menu{padding:5px 18px}
+ .profile-name{font-size:20px}.coin-label{margin-left:64px}
+}
+
+.market-head{display:flex;justify-content:space-between;align-items:center;margin:6px 2px 12px}.market-title{font-size:27px;font-weight:900}.market-sub{font-size:13px;color:var(--muted);margin-top:4px}.live-dot{display:inline-block;width:8px;height:8px;background:#18c98b;border-radius:50%;box-shadow:0 0 10px #18c98b;margin-right:5px}.market-badge{font-size:11px;font-weight:900;padding:7px 10px;border-radius:10px;background:#172035;color:#7fa9ff;border:1px solid #2b4c80}.btc-price-card{background:linear-gradient(135deg,#111728,#0b101d);border:1px solid #263552;border-radius:24px;padding:18px 20px;margin-bottom:12px}.price-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.price-line #btcPrice{font-size:38px;font-weight:950;letter-spacing:-1px}.change{font-size:15px;font-weight:900;padding:7px 10px;border-radius:10px;background:#10291f;color:#20d795}.change.down{background:#30171d;color:#ff6475}.price-time{color:var(--muted);font-size:12px;margin-top:5px}.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:12px;margin-bottom:12px}.chart-toolbar{display:flex;gap:7px;margin-bottom:8px}.tf{font-size:12px;color:var(--muted);padding:6px 10px;border-radius:8px}.tf.active{background:#1b2d4e;color:#8bb7ff;font-weight:800}.chart-wrap{height:270px;position:relative}.chart-wrap canvas{width:100%;height:100%;display:block}.market-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.mstat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px}.mstat span{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.mstat b{font-size:16px}.book-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 16px;margin-bottom:12px}.book-title{font-weight:900;padding:9px 0;border-bottom:1px solid var(--line)}.book-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}.book-row:last-child{border-bottom:0}.book-row span{color:var(--muted)}.trade-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}.trade-actions button{border:0;border-radius:16px;padding:15px;font-weight:900;font-size:16px;color:white}.trade-buy{background:#159b70}.trade-sell{background:#d94b5f}
+
+/* Screenshot-inspired Home / Mining dashboard */
+.home-hero{background:linear-gradient(135deg,#101424 0%,#24102d 100%);border:1px solid #4d2050;border-radius:26px;padding:18px;margin:8px 0 14px;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.home-profile{display:flex;align-items:center;gap:12px}.home-avatar{width:58px;height:58px;border-radius:50%;border:4px solid #2f86ff;background:#20263a;display:grid;place-items:center;font-weight:950;font-size:20px;overflow:hidden}.home-user{min-width:0;flex:1}.home-name{background:#2f82f6;border-radius:18px;padding:8px 14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.home-points{font-size:28px;font-weight:950;margin-top:5px}.home-caption{color:#9da2b4;font-size:13px}.milestone{margin-top:16px;background:linear-gradient(135deg,#14182a,#3b123d);border:1px solid #6a2d67;border-radius:22px;padding:16px;display:flex;align-items:center;gap:12px}.milestone-icon{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#a86cff,#ec39b0);display:grid;place-items:center;font-size:25px}.milestone h3{margin:0 0 3px;font-size:18px}.milestone p{margin:0;color:#a9adbc;font-size:12px;line-height:1.45}.milestone .open{margin-left:auto;border:0;background:#ee42b2;color:#fff;border-radius:14px;padding:10px 15px;font-weight:900}.profit-meta{display:flex;gap:10px;flex-wrap:wrap;color:#a5a9ba;font-size:12px;margin:14px 2px 2px}.profit-meta b{color:#f2f4fa}.profit-big{font-size:48px;font-weight:950;letter-spacing:-2px;line-height:1;margin:4px 0}.profit-note{color:#9298aa;font-size:12px;margin-bottom:12px}.home-tabs{display:grid;grid-template-columns:1fr 1fr;background:#111522;border:1px solid #252b3d;border-radius:24px;overflow:hidden;margin-bottom:12px}.home-tab{border:0;background:transparent;color:#e9ebf3;padding:13px;font-weight:850}.home-tab.on{color:#f13eaa}.home-how{display:none;background:#111522;border:1px solid #252b3d;border-radius:18px;padding:14px;margin-bottom:12px;color:#b4b8c7;font-size:13px;line-height:1.55}.home-how.show{display:block}.claim-profit{width:100%;border:0;border-radius:22px;background:linear-gradient(90deg,#f12b9c,#f13eb4);color:#fff;padding:16px;font-size:17px;font-weight:950;margin-bottom:14px;box-shadow:0 8px 22px rgba(241,43,156,.18)}.home-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.home-box{background:#111522;border:1px solid #252b3d;border-radius:20px;padding:15px;min-height:130px}.home-box:first-child{border-color:#54264f}.home-box-title{font-size:15px;color:#e7e9f0}.home-money{font-size:26px;font-weight:950;margin-top:8px}.home-chip{display:inline-block;margin-top:8px;background:#0e3a31;color:#26d797;border-radius:14px;padding:5px 9px;font-size:12px;font-weight:850}.home-sub{color:#9298aa;font-size:12px;margin-top:9px;line-height:1.45}.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.home-ref{background:#111522;border:1px solid #252b3d;border-radius:20px;padding:16px}.home-ref h3{margin:0 0 7px}.home-ref p{margin:6px 0;color:#969bac;font-size:12px;line-height:1.45}.home-statline{display:flex;justify-content:space-between;gap:10px;color:#9fa4b5;font-size:12px;margin-top:5px}.home-statline b{color:#f4f5f9}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="trade" class="screen active">
+  <div class="market-head">
+    <div>
+      <div class="market-title">BTC/USDT</div>
+      <div class="market-sub"><span class="live-dot"></span> Live Market · Binance</div>
+    </div>
+    <div class="market-badge">SPOT</div>
+  </div>
+
+  <div class="btc-price-card">
+    <div class="price-line"><span id="btcPrice">$0.00</span><span id="btcChange" class="change">0.00%</span></div>
+    <div class="price-time" id="btcUpdated">Connecting to live market…</div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-toolbar">
+      <div class="tf active">1m</div><div class="tf">5m</div><div class="tf">15m</div><div class="tf">1H</div><div class="tf">4H</div>
+    </div>
+    <div class="chart-wrap"><canvas id="btcChart"></canvas></div>
+  </div>
+
+  <div class="market-stats">
+    <div class="mstat"><span>24h High</span><b id="btcHigh">$0.00</b></div>
+    <div class="mstat"><span>24h Low</span><b id="btcLow">$0.00</b></div>
+    <div class="mstat"><span>24h Volume</span><b id="btcVolume">0 BTC</b></div>
+    <div class="mstat"><span>24h Change</span><b id="btcChange2">0.00%</b></div>
+  </div>
+
+  <div class="book-card">
+    <div class="book-title">Market Overview</div>
+    <div class="book-row"><span>Best Bid</span><b id="btcBid">$0.00</b></div>
+    <div class="book-row"><span>Best Ask</span><b id="btcAsk">$0.00</b></div>
+    <div class="book-row"><span>Spread</span><b id="btcSpread">$0.00</b></div>
+  </div>
+
+  <div class="trade-actions">
+    <button class="trade-buy" onclick="alert('Live market is enabled. Trading execution can be connected separately.')">Buy BTC</button>
+    <button class="trade-sell" onclick="alert('Live market is enabled. Trading execution can be connected separately.')">Sell BTC</button>
+  </div>
+</section>
+
+<section id="friends" class="screen">
+  <div class="title">Friends</div>
+  <div class="card">
+    <div class="row"><span>Friends invited</span><b id="fCount">0</b></div>
+    <div class="row"><span>Referral income</span><b>$<span id="fEarn">0.00</span></b></div>
+    <div class="row"><span>Commission</span><b id="fComm">0%</b></div>
+    <div class="muted">Your referral link</div>
+    <div class="notice" id="fLink">—</div>
+    <button class="btn blue" onclick="copyReferral()">Copy referral link</button>
+  </div>
+</section>
+
+<section id="home" class="screen">
+  <div class="title">Home</div>
+  <div class="home-hero">
+    <div class="home-profile">
+      <div class="home-avatar" id="homeAvatar">L</div>
+      <div class="home-user">
+        <div class="home-name" id="homeName">Lumaqix User</div>
+        <div class="home-points">💎 <span id="homeCoins">50</span></div>
+        <div class="home-caption">Points · grows with rewards & activity</div>
+      </div>
+    </div>
+    <div class="milestone">
+      <div class="milestone-icon">🏆</div>
+      <div>
+        <h3>Free Withdraw Milestones</h3>
+        <p>Invite friends → unlock milestone rewards.<br><b id="homeMilestoneText">Start inviting friends to unlock rewards.</b></p>
+      </div>
+      <button class="open" onclick="go('friends')">Open</button>
+    </div>
+  </div>
+
+  <div class="profit-meta">
+    <span>⚡ <b id="homeRewardPoints">50</b> reward points</span>
+    <span>$<b id="homeHourly">0.0008</b>/hr</span>
+    <span>$<b id="homeDailyLive">0.0200</b>/day</span>
+    <span>$<b id="homeMonthly">0.60</b>/mo</span>
+  </div>
+  <div class="profit-big">$<span id="homeProfit">0.00000000</span></div>
+  <div class="profit-note">Live mining profit available to claim. It accumulates while your mining is active.</div>
+
+  <div class="home-tabs">
+    <button id="homeRewardsTab" class="home-tab on" onclick="showHomeTab('rewards')">↗ Rewards</button>
+    <button id="homeHowTab" class="home-tab" onclick="showHomeTab('how')">ⓘ How to earn?</button>
+  </div>
+  <div id="homeHow" class="home-how">
+    <b>How to earn</b><br>
+    • New registration starts with 50 Points and $0.02/day mining.<br>
+    • Claim Daily Points to increase your mining power.<br>
+    • Invite friends and earn referral income.<br>
+    • Completed deposits increase your deposit history and can unlock future milestones.
+  </div>
+
+  <button class="claim-profit" id="claimProfitBtn" onclick="claimProfit()">✨ Claim profit · $<span id="claimProfitAmount">0.00000000</span></button>
+
+  <div class="home-balance-grid">
+    <div class="home-box">
+      <div class="home-box-title">Available</div>
+      <div class="home-money">💎 $<span id="homeAvailable">0.00</span></div>
+      <span class="home-chip">Withdrawable</span>
+    </div>
+    <div class="home-box">
+      <div class="home-box-title">Deposit balance</div>
+      <div class="home-money">💎 $<span id="homeDepositBalance">0.00</span></div>
+      <div class="home-sub">USDT credited from verified deposits</div>
+    </div>
+  </div>
+
+  <div class="home-actions">
+    <button class="btn blue" onclick="go('deposit')">↑ Top up</button>
+    <button class="btn pinkbtn" onclick="go('withdraw')">↓ Withdraw</button>
+  </div>
+
+  <div class="home-ref">
+    <h3>Get rewards from invites</h3>
+    <div class="home-statline"><span>Friends invited</span><b id="homeFriends">0</b></div>
+    <div class="home-statline"><span>Referral income</span><b>$<span id="homeRefIncome">0.00</span></b></div>
+    <p>Invite friends to unlock referral rewards and future free-withdraw milestones.</p>
+  </div>
+</section>
+
+<section id="leaders" class="screen">
+  <div class="title">Leaders</div>
+  <div class="card">
+    <div class="notice">Leaderboard can be connected to the backend later. Your personal statistics are available in Account.</div>
+  </div>
+</section>
+
+<section id="rewards" class="screen">
+  <div class="title">Rewards</div>
+  <div class="card">
+    <div class="row"><span>Daily Reward</span><b>Points</b></div>
+    <div class="row"><span>Your Points</span><b id="rewardPoints">0</b></div>
+    <button class="btn pinkbtn" onclick="claimDaily()">Claim Daily Points</button>
+    <div id="rewardMsg"></div>
+  </div>
+</section>
+
+<section id="account" class="screen">
+  <div class="topline">
+    <div class="avatar" id="accountAvatar">L</div>
+    <div><div class="profile-name" id="accountName">User</div><div class="handle" id="accountUser">@user · ID <span id="accountId">—</span></div><span class="level">Level 1</span></div>
+  </div>
+
+  <div class="coin-card">
+    <div class="coin-label">Lumaqix Coins</div>
+    <div class="coin-row"><div class="coin-icon">L</div><div><span class="coin-value" id="aPoints">0</span> <span class="coin-unit">Points</span></div></div>
+    <div class="coin-rate">Mining Power: <b id="aPower">0.00</b> · $<span id="aDaily">0.0000</span>/day</div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat green"><div class="stat-label">TOTAL DEPOSITED</div><div class="stat-value">$<span id="aDeposited">0.00</span></div><div class="muted" id="aDepCount">0 completed</div></div>
+    <div class="stat pink"><div class="stat-label">TOTAL WITHDRAWN</div><div class="stat-value">$<span id="aWithdrawn">0.00</span></div><div class="muted" id="aWdCount">Completed</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Withdrawable</div><div class="stat-value">$<span id="aBalance">0.00</span></div></div>
+    <div class="stat"><div class="stat-label">Referral points</div><div class="stat-value" id="aRefPoints">0</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Reward points</div><div class="stat-value" id="aRewardPoints">0</div></div>
+    <div class="stat"><div class="stat-label">Referral income</div><div class="stat-value">$<span id="aRefIncome">0.0000</span></div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Pending withdrawal</div><div class="stat-value">$<span id="aPending">0.0000</span></div></div>
+    <div class="stat"><div class="stat-label">Friends invited</div><div class="stat-value" id="aFriends">0</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Valid friends</div><div class="stat-value" id="aValid">0</div></div>
+    <div></div>
+  </div>
+
+  <div class="menu">
+    <div class="menu-row" onclick="toggleTheme()"><div class="menu-icon">☾</div><div class="menu-title">Theme</div><div class="chev" id="themeText">Dark</div></div>
+    <div class="menu-row" onclick="go('history')"><div class="menu-icon">◴</div><div class="menu-title">Operations / History</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="showHelp()"><div class="menu-icon">ⓘ</div><div class="menu-title">Help & FAQ</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="openTelegram('https://t.me/LumaqixBot')"><div class="menu-icon">➤</div><div class="menu-title">Lumaqix Official</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="openTelegram('https://t.me/LumaqixBot')"><div class="menu-icon">➤</div><div class="menu-title">Lumaqix Payment</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="showSupport()"><div class="menu-icon">♧</div><div class="menu-title">Support</div><div class="chev">›</div></div>
+  </div>
+</section>
+
+<section id="history" class="screen">
+  <button class="back" onclick="go('account')">← Account</button>
+  <div class="title">Operations / History</div>
+  <div id="txList" class="card">Loading…</div>
+</section>
+
+<section id="deposit" class="screen">
+  <button class="back" onclick="go('trade')">← Back</button>
+  <div class="title">Top up USDT</div>
+  <div class="card" id="depositForm">
+    <div class="muted">Enter the USD amount you want to deposit.</div>
+    <input id="damt" type="number" min="1" step="0.01" placeholder="USD amount">
+    <button class="btn blue" onclick="deposit()">Create Payment</button>
+    <div id="dres"></div>
+  </div>
+</section>
+
+<section id="withdraw" class="screen">
+  <button class="back" onclick="go('trade')">← Back</button>
+  <div class="title">Withdraw USDT</div>
+  <div class="card">
+    <div class="muted">Only your USD balance can be withdrawn. Points cannot be withdrawn.</div>
+    <input id="wamt" type="number" min="0" step="0.01" placeholder="USD amount">
+    <input id="waddr" placeholder="BSC / BEP-20 wallet address">
+    <button class="btn greenbtn" onclick="withdraw()">Submit Withdrawal</button>
+    <div id="wres"></div>
+  </div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <div class="navin">
+    <button id="ntrade" class="on" onclick="go('trade')"><span class="ico">◫</span>Trade</button>
+    <button id="nfriends" onclick="go('friends')"><span class="ico">♧</span>Friends</button>
+    <button id="nhome" onclick="go('home')"><span class="ico">⌂</span>Home</button>
+    <button id="nleaders" onclick="go('leaders')"><span class="ico">♕</span>Leaders</button>
+    <button id="nrewards" onclick="go('rewards')"><span class="ico">♧</span>Rewards</button>
+    <button id="naccount" onclick="go('account')"><span class="ico">♙</span>Account</button>
+  </div>
+</nav>
+
+<script>
+const tg=window.Telegram?.WebApp;
+tg?.ready();tg?.expand();
+const init=tg?.initData||'';
+const H={'Content-Type':'application/json','X-Telegram-Init-Data':init};
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toFixed(2);
+const num=n=>Number(n||0).toLocaleString();
+
+async function api(path,opts={}){
+  try{
+    const r=await fetch(path,{...opts,headers:{...H,...(opts.headers||{})}});
+    return await r.json();
+  }catch(e){return {ok:false,error:'Network error'}}
+}
+
+const navMap={trade:'ntrade',friends:'nfriends',home:'nhome',leaders:'nleaders',rewards:'nrewards',account:'naccount',history:'naccount',deposit:'ntrade',withdraw:'ntrade'};
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id)?.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
+  $(navMap[id])?.classList.add('on');
+  if(id==='account')loadAccount();
+  if(id==='history')loadTransactions();
+  if(id==='friends')loadReferral();
+  if(id==='home')loadHome();
+  loadMe();
+  window.scrollTo(0,0);
+}
+function showHomeTab(tab){
+  const how=$('homeHow');
+  const r=$('homeRewardsTab'), h=$('homeHowTab');
+  if(tab==='how'){how.classList.add('show');h.classList.add('on');r.classList.remove('on')}
+  else{how.classList.remove('show');r.classList.add('on');h.classList.remove('on')}
+}
+async function loadHome(){
+  const [me,st,ref]=await Promise.all([api('/api/me'),api('/api/stats'),api('/api/referral')]);
+  if(me.ok){
+    const u=me.user||{};
+    const pts=Number(u.points||0), claim=Number(u.mining_claimable||0);
+    const av=Number(u.balance||0), daily=Number(u.mining_usd_per_day||0);
+    $('homeProfit').textContent=claim.toFixed(8);
+    $('claimProfitAmount').textContent=claim.toFixed(8);
+    $('homeAvailable').textContent=av.toFixed(4);
+    $('homeCoins').textContent=pts.toLocaleString();
+    $('homeRewardPoints').textContent=pts.toLocaleString();
+    $('homeHourly').textContent=Number(u.mining_hourly||0).toFixed(4);
+    $('homeDailyLive').textContent=daily.toFixed(4);
+    $('homeMonthly').textContent=Number(u.mining_monthly||0).toFixed(2);
+    $('homeClaimState')?.replaceChildren();
+    const name=(u.first_name||u.username||'Lumaqix User').trim();
+    $('homeName').textContent=name;
+    $('homeAvatar').textContent=(name.charAt(0)||'L').toUpperCase();
+    const photo=window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url;
+    if(photo){$('homeAvatar').style.backgroundImage=`url("${photo}")`;$('homeAvatar').style.backgroundSize='cover';$('homeAvatar').textContent='';}
+    $('claimProfitBtn').disabled=claim<=0;
+    $('claimProfitBtn').style.opacity=claim<=0?'0.62':'1';
+  }
+  if(st.ok){$('homeDepositBalance').textContent=Number(st.stats?.deposits||0).toFixed(4)}
+  if(ref.ok){
+    const n=Number(ref.count||0); $('homeFriends').textContent=n; $('homeRefIncome').textContent=Number(ref.earnings||0).toFixed(4);
+    $('homeMilestoneText').textContent=n>=10?'10+ friends milestone unlocked.':`${n}/10 friends toward the first milestone.`;
+  }
+}
+async function claimProfit(){
+  const x=await api('/api/claim-profit',{method:'POST',body:'{}'});
+  if(x.ok){alert(`Profit claimed: $${Number(x.claimed||0).toFixed(8)}`);}
+  else if(x.error)alert(x.error);
+  loadMe();loadHome();
+}
+function setProfile(u){
+  const name=(u.first_name||u.username||'User').trim();
+  const handle=u.username?'@'+u.username:'@user';
+  const id=u.id||'—';
+  $('tradeName').textContent=name;$('tradeUser').textContent=handle;
+  $('accountName').textContent=name;$('accountUser').innerHTML=handle+' · ID <span id="accountId">'+id+'</span>';
+  const initial=name.charAt(0).toUpperCase()||'L';
+  $('avatar').textContent=initial;$('accountAvatar').textContent=initial;
+  const photo=window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url;
+  if(photo){$('avatar').style.backgroundImage=`url("${photo}")`;$('avatar').style.backgroundSize='cover';$('avatar').textContent='';$('accountAvatar').style.backgroundImage=`url("${photo}")`;$('accountAvatar').style.backgroundSize='cover';$('accountAvatar').textContent='';}
+}
+
+async function loadMe(){
+  const x=await api('/api/me');
+  if(!x.ok)return;
+  const u=x.user||{};
+  setProfile(u);
+  const pts=num(u.points), power=Number(u.mining_power||0), daily=Number(u.mining_usd_per_day||0);
+  const set=(id,v)=>{const el=$(id);if(el)el.textContent=v};
+  set('tradePoints',pts);set('tradePower',power.toFixed(2));set('tradeRate',daily.toFixed(4));
+  set('tradeBal',money(u.balance));set('tradeDaily',daily.toFixed(2));
+  set('mPoints',pts);set('mPower',power.toFixed(2));set('mDaily',daily.toFixed(2));
+  set('homeBal',money(u.balance));set('homePoints',pts);set('homePts2',pts);set('homePower',power.toFixed(2));set('homeDaily',daily.toFixed(2));
+  set('homeMiningEarned',Number(u.mining_earned_now||0).toFixed(8));
+  set('homeMiningStatus',power>0?'ACTIVE ⛏️':'INACTIVE — claim Points');
+  set('rewardPoints',pts);
+  if(document.getElementById('home')?.classList.contains('active')) loadHome();
+}
+
+async function loadReferral(){
+  const x=await api('/api/referral');
+  if(!x.ok)return;
+  $('fCount').textContent=num(x.count);$('fEarn').textContent=money(x.earnings);$('fComm').textContent=(x.commission_percent||0)+'%';$('fLink').textContent=x.referral_link||'—';
+  $('aFriends').textContent=num(x.count);$('aRefIncome').textContent=Number(x.earnings||0).toFixed(4);$('aRefPoints').textContent=num(x.count);
+}
+
+async function loadAccount(){
+  const [me,st,ref,tx]=await Promise.all([api('/api/me'),api('/api/stats'),api('/api/referral'),api('/api/transactions')]);
+  if(me.ok){
+    const u=me.user||{}, pts=num(u.points), power=Number(u.mining_power||0), daily=Number(u.mining_usd_per_day||0);
+    setProfile(u);$('aPoints').textContent=pts;$('aPower').textContent=power.toFixed(2);$('aDaily').textContent=daily.toFixed(4);$('aBalance').textContent=money(u.balance);$('aRewardPoints').textContent=pts;
+  }
+  if(st.ok){
+    const s=st.stats||{};
+    $('aDeposited').textContent=money(s.deposits);$('aWithdrawn').textContent=money(s.withdrawn);
+    $('aDepCount').textContent='Completed deposits';$('aWdCount').textContent='Completed withdrawals';
+  }
+  if(ref.ok){
+    $('aFriends').textContent=num(ref.count);$('aRefIncome').textContent=Number(ref.earnings||0).toFixed(4);$('aRefPoints').textContent=num(ref.count);
+  }
+  if(tx.ok){
+    const pending=(tx.transactions||[]).filter(t=>String(t.type||'').toLowerCase().includes('withdraw')&&t.status==='pending').reduce((a,t)=>a+Number(t.amount||0),0);
+    $('aPending').textContent=pending.toFixed(4);
+    const valid=(ref.ok?Number(ref.count||0):0);
+    $('aValid').textContent=num(Math.max(0,valid));
+  }
+}
+
+async function claimDaily(){
+  const x=await api('/api/daily',{method:'POST',body:'{}'});
+  const msg=x.ok?`<div class="ok" style="margin-top:10px">+${num(x.reward_points||0)} Points 🎉</div>`:`<div class="warn" style="margin-top:10px">${x.remaining?'Already claimed for today.':(x.error||'Unavailable')}</div>`;
+  $('dailyMsg').innerHTML=msg;$('rewardMsg').innerHTML=msg;
+  loadMe();
+  if(document.getElementById('account').classList.contains('active'))loadAccount();
+}
+
+let depositWatch=null;
+async function deposit(){
+  clearInterval(depositWatch);
+  const amount=Number($('damt').value||0);
+  if(amount<1){$('dres').innerHTML=`<div class="warn" style="margin-top:10px">Minimum deposit is $1.00</div>`;return}
+  const before=await api('/api/me');
+  const startBalance=Number(before?.user?.balance||0);
+  const x=await api('/api/deposit',{method:'POST',body:JSON.stringify({amount:$('damt').value})});
+  if(!x.ok){$('dres').innerHTML=`<div class="warn" style="margin-top:10px">${x.error||'Unable to create payment'}</div>`;return}
+  const p=x.payment||{};
+  $('depositForm').innerHTML=`
+    <div class="deposit-detail">
+      <div class="deposit-head"><div class="usdt-logo">₮</div><div><div class="deposit-name">USDT BEP20</div><div class="deposit-sub">Transfer network</div></div></div>
+      <div class="pay-row"><span>To pay</span><span class="pay-value">${p.pay_amount||amount} ${p.pay_currency||'USDT'}</span></div>
+      <div class="pay-row"><span>To balance</span><span class="pay-value green">${Number(p.pay_amount||amount).toFixed(2)} USDT</span></div>
+      <div class="address-title">Address</div>
+      <div class="address-box"><div class="address-text" id="depositAddress">${p.pay_address||''}</div><button class="copy-address" onclick="copyDepositAddress()">Copy address</button></div>
+      <div class="deposit-note">Send the exact amount to this address on the selected network. No extra payment page — details are here.</div>
+      <div class="deposit-status" id="depositStatus"><div class="status-title"><span class="status-spinner"></span>Waiting for transfer</div><div class="status-sub">We check incoming payments automatically</div></div>
+    </div>`;
+  window._depositPaymentId=String(p.payment_id||'');
+  window._depositStartBalance=startBalance;
+  watchDeposit();
+}
+function copyDepositAddress(){
+  const v=$('depositAddress')?.textContent||'';
+  navigator.clipboard?.writeText(v).then(()=>toast('Address copied')).catch(()=>toast(v));
+}
+async function watchDeposit(){
+  const started=Date.now();
+  depositWatch=setInterval(async()=>{
+    try{
+      const me=await api('/api/me');
+      const tx=await api('/api/transactions');
+      const pid=String(window._depositPaymentId||'');
+      const matched=(tx.transactions||[]).find(t=>String(t.type)==='deposit' && (pid ? String(t.external_id||'')===pid : false));
+      const balance=Number(me?.user?.balance||0);
+      if((matched&&String(matched.status)==='completed') || balance>=window._depositStartBalance+Number($('#damt')?.value||0)-0.00000001){
+        clearInterval(depositWatch);
+        const st=$('depositStatus');
+        if(st)st.innerHTML=`<div class="status-success">✓ Deposit successful</div><div class="status-sub">Your balance has been updated automatically.</div>`;
+        loadMe();
+      }
+      if(Date.now()-started>30*60*1000)clearInterval(depositWatch);
+    }catch(e){}
+  },3000);
+}
+
+async function withdraw(){
+  const x=await api('/api/withdraw',{method:'POST',body:JSON.stringify({amount:$('wamt').value,address:$('waddr').value})});
+  $('wres').innerHTML=x.ok?`<div class="ok" style="margin-top:10px">Withdrawal ${x.status||'submitted'}.</div>`:`<div class="warn" style="margin-top:10px">${x.error||'Unable to submit withdrawal'}</div>`;
+  loadMe();
+}
+
+async function loadTransactions(){
+  const x=await api('/api/transactions');
+  if(!x.ok){$('txList').innerHTML='<div class="warn">'+(x.error||'Unable to load history')+'</div>';return}
+  const rows=x.transactions||[];
+  $('txList').innerHTML=rows.length?rows.map(t=>`<div class="row"><span><b>${t.type}</b><br><span class="muted">${t.status} · ${t.currency||''}</span></span><b>${money(t.amount)}</b></div>`).join(''):'<div class="muted">No transactions yet.</div>';
+}
+
+function copyReferral(){
+  const v=$('fLink').textContent;
+  navigator.clipboard?.writeText(v).then(()=>alert('Referral link copied')).catch(()=>alert(v));
+}
+function openTelegram(url){tg?.openTelegramLink?.(url)||window.open(url,'_blank')}
+function showHelp(){alert('Lumaqix Help & FAQ\\n\\nPoints are earned from rewards and are not withdrawable. Mining earnings are added to USD balance.')}
+function showSupport(){alert('Support: contact the Lumaqix support account configured by the administrator.')}
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  $('themeText').textContent=document.body.classList.contains('light')?'Light':'Dark';
+}
+loadMe();
+</script>
+</body>
+</html>
