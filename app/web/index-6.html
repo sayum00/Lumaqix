@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lumaqix</title>
+<link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="online"><i></i><b id="onlineCount">0</b> online</div>
+</header>
+
+<main>
+<section class="page active" id="homePage">
+  <div class="hero-profile">
+    <div class="profile-row">
+      <div class="avatar-wrap"><div class="avatar" id="avatar">M</div></div>
+      <div class="user-block"><div class="name" id="userName">MD SAYUM ALI</div><div class="level-pill">★ Level 1</div></div>
+      <div class="hero-badge">L1</div>
+    </div>
+    <div class="total-row"><span class="usdt-logo">₮</span><strong>298</strong><span>USDT</span><em>Total balance</em></div>
+    <div class="income-line"><span><i class="income-dot"></i> Income</span><b>$0.00</b><small>hr</small><b>$0.00</b><small>day</small><b>$0.00</b><small>month</small></div>
+    <div class="hero-number">$<span id="withdrawBalance">0.00000000</span></div>
+    <div class="hero-buttons"><button class="lime" id="claimBtn">↗ &nbsp; Claim profit</button><button class="dark-btn" id="howBtn">? &nbsp; How to earn?</button></div>
+    <p class="hero-note">Top up to 3 USDT or grow with invites to raise income to 2.7% per day.</p>
+  </div>
+
+  <div class="balance-grid">
+    <div class="balance-tile coins-tile"><span class="tile-icon">🪙</span><label>Coins</label><strong id="pointsBalance">50</strong><em>0.025% &nbsp; Per day</em></div>
+    <div class="balance-tile usdt-tile"><span class="tile-icon usdt">₮</span><label>USDT balance</label><strong id="withdrawBalance2">$0.0000</strong><small>Withdrawable mining income</small><em>0% &nbsp; Per day</em></div>
+  </div>
+
+  <div class="main-actions"><button class="blue-action" data-page="topup">⇧ <b>Top up</b></button><button class="lime-action" data-page="withdraw">⇩ <b>Withdraw</b></button></div>
+
+  <div class="promo-card"><div class="promo-icon">₮</div><h3><span>+30%</span> to your USDT balance in one tap</h3><p>Free bots are available on the AI trading agents dashboard. Top up for instant income of <b>+30%</b> of the deposit amount.</p><button class="blue-action wide" data-page="topup">▣ &nbsp; Top up USDT balance</button><small>Limited slots, bonuses are limited!</small></div>
+
+  <div class="separate-balances">
+    <div><span>💵 Deposit balance</span><b>$<i id="depositBalance">0.00</i></b><small>Locked principal</small></div>
+    <div><span>⛏ Mining income</span><b>$<i id="miningBalance">0.00000000</i></b><small>Earned from qualifying deposits</small></div>
+  </div>
+</section>
+
+<section class="page" id="tradePage">
+  <div class="page-title"><div><small>LIVE MARKET</small><h1>BTC Market</h1></div><span class="live">● LIVE</span></div>
+  <div class="btc-card">
+    <div class="btc-head">
+      <div><b>BTC / USDT</b><small>Live market price</small></div>
+      <div><strong>$<span id="btcPrice">--</span></strong><em id="btcChange">--</em></div>
+    </div>
+    <div class="chart"><svg viewBox="0 0 360 130" preserveAspectRatio="none"><polyline points="0,108 18,100 36,104 55,82 75,88 95,62 116,72 136,45 158,59 178,38 201,52 224,27 245,42 266,24 288,37 310,19 332,31 360,12"/></svg></div>
+    <div class="chart-tabs"><button class="active">1 day</button><button>7 days</button><button>30 days</button></div>
+  </div>
+  <p class="muted">Live BTC price is shown from a public market feed.</p>
+</section>
+
+<section class="page" id="friendsPage">
+  <div class="page-title"><div><small>REFERRAL PROGRAM</small><h1>Friends</h1></div></div>
+  <div class="friends-hero"><h2>Invite friends and raise your hourly income</h2><p>Share your invite link and earn rewards from successful referrals.</p><div class="invite-box"><input id="inviteLink" readonly value="Generating…"><button id="copyInvite">Copy</button></div></div>
+  <div class="reward-card"><b>Reward for each friend</b><div><span>+10 coins</span><span>+10% USDT</span><span>+1 Gift</span></div></div>
+  <div class="levels"><div><b>L1</b><span>10%</span></div><div><b>L2</b><span>3%</span></div><div><b>L3</b><span>2%</span></div><div><b>L4</b><span>1%</span></div><div><b>L5</b><span>1%</span></div></div>
+  <h3>Your referrals</h3><div class="filters"><button class="active">All</button><button>L1</button><button>L2</button><button>L3</button><button>L4</button><button>L5</button></div><div class="empty">No referrals yet.</div>
+</section>
+
+<section class="page" id="giftsPage">
+  <div class="page-title"><div><small>REWARDS</small><h1>Gifts</h1></div></div>
+  <div class="gift-card featured"><div class="gift-art">₿ <b>GIFT</b></div><h2>Open gifts and get free coins</h2><p>Daily gift can be claimed once every 24 hours.</p><button class="lime full" id="dailyGift">Claim +10 Coins</button><div id="giftMsg" class="muted"></div></div>
+  <div class="gift-card"><div class="gift-row"><span class="gift-box">🎁</span><div><h2>Invite Gift Box</h2><p>One box is added for every successful invite.</p></div></div><button class="lime full" id="openGift">Open Gift Box</button></div>
+</section>
+
+<section class="page" id="accountPage">
+  <div class="page-title"><div><small>PROFILE</small><h1>Account</h1></div></div>
+  <div class="account-profile"><div class="avatar" id="accountAvatar">M</div><div><b id="accountName">MD SAYUM ALI</b><small>Level 1</small></div></div>
+  <div class="account-list">
+    <div><span>Invited by ID</span><b id="invitedBy">—</b></div><div><span>Coin balance</span><b id="accCoins">50</b></div><div><span>Deposit balance</span><b>$<i id="accDeposit">0.00</i></b></div><div><span>Withdrawable USDT</span><b>$<i id="accWithdraw">0.00000000</i></b></div><div><span>Referral income</span><b>$<i id="refIncome">0.00</i></b></div><div><span>Language</span><b>English ›</b></div><div><span>Theme</span><b>Dark ●</b></div><div><span>Operations History</span><b>›</b></div><div><span>FAQ</span><b>18 answers ›</b></div><div><span>Help</span><b>Operators online ›</b></div>
+  </div>
+</section>
+
+<section class="modal" id="topupModal"><div class="modal-box"><button class="modal-close">×</button><h2>Top up</h2><p>Only <b>USDT BEP20</b> · minimum 2 USDT</p><input id="topupAmount" type="number" min="2" step="0.01" placeholder="Amount (min 2 USDT)"><div class="quick"><button>5</button><button>10</button><button>30</button><button>100</button><button>300</button></div><div class="deposit-address"><small>USDT BEP20 deposit address</small><b>Will be generated by backend wallet provisioning.</b></div></div></section>
+<section class="modal" id="withdrawModal"><div class="modal-box"><button class="modal-close">×</button><h2>Withdraw</h2><p>USDT BEP20 · minimum 0.1 USDT</p><div class="available">Available: <b>$<span id="withdrawAvailable">0.00000000</span></b></div><input id="withdrawAmount" type="number" min="0.1" step="0.0001" placeholder="Amount (min 0.1 USDT)"><input id="withdrawAddress" placeholder="BEP20 wallet address"><button class="lime full" id="withdrawBtn">Withdraw</button><div id="withdrawMsg" class="muted"></div></div></section>
+</main>
+
+<nav class="bottom-nav"><button data-page="trade"><span>↗</span>Trade</button><button data-page="friends"><span>♟</span>Friends</button><button data-page="home" class="farm"><i>⛏</i><span>Farm</span></button><button data-page="gifts"><span>🎁</span>Gifts</button><button data-page="account"><span>♙</span>Account</button></nav>
+</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="/web/app.js"></script>
+</body></html>
