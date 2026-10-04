@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: Lumaqix-1
-    runtime: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python main.py
-    healthCheckPath: /health
