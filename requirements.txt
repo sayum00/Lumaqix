@@ -1,6 +1,0 @@
-fastapi
-uvicorn[standard]
-python-telegram-bot>=21,<23
-httpx
-SQLAlchemy>=2.0
-psycopg2-binary
