@@ -1,5 +1,5 @@
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 python-telegram-bot==21.10
-psycopg[binary]==3.2.3
+psycopg[binary]>=3.2.3,<4
 pydantic-settings==2.7.1
