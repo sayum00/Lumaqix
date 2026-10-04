@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lumaqix</title>
+<link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <button class="icon-btn" id="closeBtn">×</button>
+    <div class="online"><span></span><b>68,448</b> online</div>
+    <button class="icon-btn">⋮</button>
+  </header>
+
+  <main>
+    <section class="profile">
+      <div class="avatar" id="avatar">M</div>
+      <div>
+        <div class="name" id="userName">MD SAYUM ALI</div>
+        <div class="level">Level 1</div>
+      </div>
+      <div class="profile-menu">⌄</div>
+    </section>
+
+    <section class="balance-hero">
+      <div class="label">TOTAL WITHDRAWABLE</div>
+      <div class="big-balance">$<span id="withdrawBalance">0.00000000</span></div>
+      <div class="income-row">
+        <div><small>Income / hr</small><b id="hourIncome">$0.0000</b></div>
+        <div><small>Income / day</small><b id="dayIncome">$0.0000</b></div>
+        <div><small>Income / month</small><b id="monthIncome">$0.0000</b></div>
+      </div>
+      <button class="primary" id="claimBtn">Claim profit</button>
+      <button class="ghost" id="howBtn">How to earn</button>
+    </section>
+
+    <section class="clear-balances">
+      <div class="balance-card points">
+        <div class="card-title">🪙 Coins</div>
+        <div class="card-value"><span id="pointsBalance">50</span></div>
+        <div class="muted">Welcome points · not withdrawable</div>
+      </div>
+      <div class="balance-card">
+        <div class="card-title">💵 Deposit balance</div>
+        <div class="card-value">$<span id="depositBalance">0.00</span></div>
+        <div class="muted">Locked principal</div>
+      </div>
+      <div class="balance-card">
+        <div class="card-title">⛏️ Mining income</div>
+        <div class="card-value">$<span id="miningBalance">0.00000000</span></div>
+        <div class="muted">Earned from qualifying deposits</div>
+      </div>
+      <div class="balance-card">
+        <div class="card-title">💳 Withdrawable</div>
+        <div class="card-value">$<span id="withdrawBalance2">0.00000000</span></div>
+        <div class="muted">Available for withdrawal</div>
+      </div>
+    </section>
+
+    <section class="actions-grid">
+      <button class="action" data-page="topup"><span>＋</span><b>Top up</b><small>USDT BEP20 · min 2</small></button>
+      <button class="action" data-page="withdraw"><span>↗</span><b>Withdraw</b><small>USDT BEP20 · min 0.1</small></button>
+      <button class="action" data-page="trade"><span>₿</span><b>Trade</b><small>BTC/USDT live</small></button>
+      <button class="action" data-page="friends"><span>👥</span><b>Friends</b><small>5-level program</small></button>
+    </section>
+
+    <section class="screen active" id="homeScreen"></section>
+
+    <section class="screen" id="tradeScreen">
+      <div class="section-head"><h2>Trading-bot dashboard</h2><span class="live-dot">LIVE</span></div>
+      <div class="trade-price">
+        <div><span>BTC/USDT</span><small>Binance market feed</small></div>
+        <strong>$<span id="btcPrice">--</span></strong>
+        <em id="btcChange">--</em>
+      </div>
+      <div class="stats">
+        <div><small>Coins</small><b id="tradeCoins">50</b></div>
+        <div><small>Active bots</small><b>1</b></div>
+        <div><small>USDT</small><b id="tradeUsdt">$0.00</b></div>
+      </div>
+      <div class="bot-card">
+        <div class="bot-title"><b>BTC/USDT · GRID Bot</b><span>Active</span></div>
+        <div class="chart">
+          <svg viewBox="0 0 360 130" preserveAspectRatio="none">
+            <polyline points="0,105 25,92 48,98 72,72 96,80 120,55 145,67 168,40 195,52 220,31 244,45 270,28 295,39 320,20 345,30 360,18"/>
+          </svg>
+        </div>
+        <div class="chart-tabs"><span>1 day</span><span>7 days</span><span>30 days</span></div>
+      </div>
+      <p class="muted">Live BTC price updates automatically. Trading execution is not enabled by the UI alone.</p>
+    </section>
+
+    <section class="screen" id="friendsScreen">
+      <div class="section-head"><h2>Invite friends</h2></div>
+      <p class="muted">Raise your hourly income with successful referrals.</p>
+      <div class="invite-box"><code id="inviteLink">Generating…</code><button id="copyInvite">Copy</button></div>
+      <div class="reward-row"><span>Each successful friend</span><b>+10 coins · +10% USDT · +1 gift</b></div>
+      <div class="levels">
+        <div><b>L1</b><span>10%</span></div><div><b>L2</b><span>3%</span></div><div><b>L3</b><span>2%</span></div><div><b>L4</b><span>1%</span></div><div><b>L5</b><span>1%</span></div>
+      </div>
+      <h3>Your referrals</h3>
+      <div class="filters"><button class="active">All</button><button>L1</button><button>L2</button><button>L3</button><button>L4</button><button>L5</button></div>
+      <div id="referrals" class="empty">No referrals yet.</div>
+    </section>
+
+    <section class="screen" id="giftsScreen">
+      <div class="section-head"><h2>🎁 Gifts</h2></div>
+      <div class="gift-card">
+        <div class="gift-art">₿<span>GIFT</span></div>
+        <h3>Daily Gift</h3><p>Claim once every 24 hours.</p>
+        <button class="primary" id="dailyGift">Claim daily gift</button>
+      </div>
+      <div class="gift-card">
+        <div class="gift-art small">🎁</div>
+        <h3>Invite Gift Box</h3><p>One box is added for every successful invite.</p>
+        <button class="primary" id="openGift">Open gift box</button>
+        <div id="giftMsg" class="muted"></div>
+      </div>
+    </section>
+
+    <section class="screen" id="accountScreen">
+      <div class="section-head"><h2>Account</h2></div>
+      <div class="account-card"><span>Invited by ID</span><b id="invitedBy">—</b></div>
+      <div class="account-card"><span>Coin balance</span><b id="accCoins">50</b></div>
+      <div class="account-card"><span>Deposit balance</span><b>$<span id="accDeposit">0.00</span></b></div>
+      <div class="account-card"><span>Mining income</span><b>$<span id="accMining">0.00000000</span></b></div>
+      <div class="account-card"><span>Withdrawable USDT</span><b>$<span id="accWithdraw">0.00000000</span></b></div>
+      <div class="account-card"><span>Referral income</span><b>$<span id="refIncome">0.00</span></b></div>
+      <div class="account-card"><span>Language</span><b>English</b></div>
+      <div class="account-card"><span>Theme</span><b>Dark</b></div>
+      <div class="account-card"><span>Operations history</span><b>›</b></div>
+      <div class="account-card"><span>FAQ</span><b>18 answers ›</b></div>
+    </section>
+
+    <section class="modal" id="topupModal">
+      <div class="modal-box"><button class="modal-close">×</button><h2>Top up</h2><p class="muted">Only USDT BEP20 · minimum 2 USDT</p><input id="topupAmount" type="number" min="2" step="0.01" placeholder="Amount (min 2 USDT)"><div class="quick"><button>5</button><button>10</button><button>30</button><button>100</button><button>300</button></div><div class="address">BEP20 deposit address will appear here after backend wallet provisioning.</div></div>
+    </section>
+
+    <section class="modal" id="withdrawModal">
+      <div class="modal-box"><button class="modal-close">×</button><h2>Withdraw · USDT BEP20</h2><p class="muted">Minimum 0.1 USDT. Deposit principal remains locked during its 10-day cycle.</p><input id="withdrawAmount" type="number" min="0.1" step="0.0001" placeholder="Amount (min 0.1 USDT)"><input id="withdrawAddress" placeholder="BEP20 wallet address"><button class="primary" id="withdrawBtn">Request withdrawal</button><div id="withdrawMsg" class="muted"></div></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-page="trade"><span>↗</span>Trade</button>
+    <button data-page="friends"><span>👥</span>Friends</button>
+    <button data-page="home" class="farm"><span>⛏</span>Farm</button>
+    <button data-page="gifts"><span>🎁</span>Gifts</button>
+    <button data-page="account"><span>👤</span>Account</button>
+  </nav>
+</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/web/app.js"></script>
+</body>
+</html>
