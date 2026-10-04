@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lumaqix</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#060915;--panel:#111522;--panel2:#151a2a;--line:#23293a;--text:#f5f6fb;--muted:#9298aa;--blue:#3182f6;--green:#18c98b;--pink:#f02b98}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:680px;margin:auto;padding:16px 16px 98px}
+.screen{display:none}.screen.active{display:block}
+.topline{display:flex;align-items:center;gap:12px;margin:4px 0 18px}
+.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:4px solid var(--blue);background:#20263a;display:grid;place-items:center;font-weight:900;font-size:22px}
+.profile-name{font-size:23px;font-weight:900;line-height:1.15}
+.handle{color:var(--muted);font-size:14px;margin-top:3px}
+.level{display:inline-block;margin-top:8px;padding:6px 13px;border-radius:18px;background:#54114d;color:#ff4cb2;font-weight:800;font-size:13px}
+.coin-card{background:linear-gradient(135deg,#121625,#101321);border:1px solid #24406d;border-radius:28px;padding:24px 22px;margin-bottom:14px}
+.coin-label{font-size:18px;color:#a1a5b4;margin-left:70px}
+.coin-row{display:flex;align-items:center;gap:16px}
+.coin-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4a0,#e3a728 45%,#7b4b0c 90%);border:2px solid #ffd96c;color:#7a4b08;font-size:28px;font-weight:900;box-shadow:0 4px 16px #0008}
+.coin-value{font-size:48px;font-weight:950;line-height:1}
+.coin-unit{font-size:22px;color:#a1a5b4;font-weight:800}
+.coin-rate{color:#9fa5b7;font-size:16px;margin-top:8px;margin-left:74px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:22px 20px;min-height:118px}
+.stat.green{border-color:#0c5947;background:#081a1b}
+.stat.pink{border-color:#5b1a55;background:#1b0b1c}
+.stat-label{color:#999eaf;font-size:17px;line-height:1.15}
+.stat.green .stat-label{color:#20d697}.stat.pink .stat-label{color:#ff48b0}
+.stat-value{font-size:36px;font-weight:950;margin-top:7px;letter-spacing:-1px}
+.menu{background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:6px 28px;margin-top:28px}
+.menu-row{display:flex;align-items:center;gap:17px;padding:19px 0;border-bottom:1px solid #252a39;min-height:67px}
+.menu-row:last-child{border-bottom:0}
+.menu-icon{width:27px;color:#3388ff;font-size:25px;text-align:center}
+.menu-title{font-size:18px;font-weight:650;flex:1}
+.chev{color:#9298aa;font-size:27px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0}
+.row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.muted{color:var(--muted);font-size:13px}
+.big{font-size:28px;font-weight:900}
+.btn{width:100%;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:850;margin-top:10px}
+.blue{background:#236fe0}.greenbtn{background:#149a68}.pinkbtn{background:#e72b91}
+input{width:100%;padding:14px;border-radius:14px;border:1px solid #33405b;background:#090e1a;color:#fff;margin-top:8px;outline:none}
+.title{font-size:25px;font-weight:900;margin:8px 0 14px}
+.back{background:none;border:0;color:#9ba2b5;padding:0 0 8px;font-weight:700}
+.nav{position:fixed;left:0;right:0;bottom:0;height:76px;background:#111522;border-top:1px solid #222839;z-index:20}
+.navin{max-width:680px;margin:auto;height:100%;display:grid;grid-template-columns:repeat(6,1fr)}
+.nav button{background:none;border:0;color:#8e95a8;font-size:10px;font-weight:750;padding:8px 2px 5px}
+.nav button .ico{display:block;font-size:24px;line-height:28px;margin-bottom:3px}
+.nav button.on{color:#f7f8fb}
+.notice{padding:11px 13px;border-radius:13px;background:#101827;color:#9fa7ba;font-size:13px;margin-top:10px}
+.ok{color:#42e1a0}.warn{color:#ffd166}
+@media(max-width:390px){
+ .coin-value{font-size:42px}.stat-value{font-size:31px}.statgrid{gap:10px}.stat{padding:18px 14px}.menu{padding:5px 18px}
+ .profile-name{font-size:20px}.coin-label{margin-left:64px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="trade" class="screen active">
+  <div class="topline">
+    <div class="avatar" id="avatar">L</div>
+    <div><div class="profile-name" id="tradeName">Lumaqix</div><div class="handle" id="tradeUser">@user</div><span class="level">Level 1</span></div>
+  </div>
+  <div class="coin-card">
+    <div class="coin-label">Lumaqix Coins</div>
+    <div class="coin-row"><div class="coin-icon">L</div><div><span class="coin-value" id="tradePoints">50</span> <span class="coin-unit">Coins</span></div></div>
+    <div class="coin-rate">Mining Power: <b id="tradePower">0.00</b> · $<span id="tradeRate">0.0000</span>/day</div>
+  </div>
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">USD Balance</div><div class="stat-value">$<span id="tradeBal">0.00</span></div></div>
+    <div class="stat green"><div class="stat-label">Mining / day</div><div class="stat-value">$<span id="tradeDaily">0.00</span></div></div>
+  </div>
+  <div class="statgrid">
+    <button class="btn blue" onclick="go('deposit')">＋ Top up</button>
+    <button class="btn greenbtn" onclick="go('withdraw')">↗ Withdraw</button>
+  </div>
+  <div class="card">
+    <b>⛏️ Mining</b>
+    <div class="row"><span>Points</span><b id="mPoints">0</b></div>
+    <div class="row"><span>Mining Power</span><b id="mPower">0.00</b></div>
+    <div class="row"><span>Mining income today</span><b>$<span id="mDaily">0.00</span></b></div>
+    <div class="notice">Points are not withdrawable. Mining earnings are added to your USD balance.</div>
+  </div>
+  <div class="card">
+    <b>🎁 Daily Reward</b>
+    <div class="muted" style="margin-top:6px">Daily reward is Points only.</div>
+    <button class="btn pinkbtn" onclick="claimDaily()">Claim Daily Points</button>
+    <div id="dailyMsg"></div>
+  </div>
+</section>
+
+<section id="friends" class="screen">
+  <div class="title">Friends</div>
+  <div class="card">
+    <div class="row"><span>Friends invited</span><b id="fCount">0</b></div>
+    <div class="row"><span>Referral income</span><b>$<span id="fEarn">0.00</span></b></div>
+    <div class="row"><span>Commission</span><b id="fComm">0%</b></div>
+    <div class="muted">Your referral link</div>
+    <div class="notice" id="fLink">—</div>
+    <button class="btn blue" onclick="copyReferral()">Copy referral link</button>
+  </div>
+</section>
+
+<section id="home" class="screen">
+  <div class="title">Home</div>
+  <div class="coin-card">
+    <div class="coin-label">Lumaqix Balance</div>
+    <div class="coin-row"><div class="coin-icon">L</div><div><span class="coin-value">$<span id="homeBal">0.00</span></span></div></div>
+    <div class="coin-rate">Points: <b id="homePoints">0</b> · Mining Power: <b id="homePower">0.00</b></div>
+  </div>
+  <div class="statgrid">
+    <button class="btn blue" onclick="go('deposit')">＋ Deposit</button>
+    <button class="btn greenbtn" onclick="go('withdraw')">↗ Withdraw</button>
+  </div>
+  <div class="card"><div class="row"><span>Mining income / day</span><b>$<span id="homeDaily">0.00</span></b></div><div class="row"><span>Points</span><b id="homePts2">0</b></div></div>
+</section>
+
+<section id="leaders" class="screen">
+  <div class="title">Leaders</div>
+  <div class="card">
+    <div class="notice">Leaderboard can be connected to the backend later. Your personal statistics are available in Account.</div>
+  </div>
+</section>
+
+<section id="rewards" class="screen">
+  <div class="title">Rewards</div>
+  <div class="card">
+    <div class="row"><span>Daily Reward</span><b>Points</b></div>
+    <div class="row"><span>Your Points</span><b id="rewardPoints">0</b></div>
+    <button class="btn pinkbtn" onclick="claimDaily()">Claim Daily Points</button>
+    <div id="rewardMsg"></div>
+  </div>
+</section>
+
+<section id="account" class="screen">
+  <div class="topline">
+    <div class="avatar" id="accountAvatar">L</div>
+    <div><div class="profile-name" id="accountName">User</div><div class="handle" id="accountUser">Telegram ID: <span id="accountId">—</span></div><span class="level">Level 1</span></div>
+  </div>
+
+  <div class="coin-card">
+    <div class="coin-label">Lumaqix Coins</div>
+    <div class="coin-row"><div class="coin-icon">L</div><div><span class="coin-value" id="aPoints">50</span> <span class="coin-unit">Coins</span></div></div>
+    <div class="coin-rate">Mining Power: <b id="aPower">0.00</b> · $<span id="aDaily">0.0000</span>/day · Deposit mining <b>2.7%</b>/day</div>
+  </div>
+
+
+  <div class="statgrid">
+    <div class="stat green"><div class="stat-label">TOTAL DEPOSITED</div><div class="stat-value">$<span id="aDeposited">0.00</span></div><div class="muted" id="aDepCount">0 completed</div></div>
+    <div class="stat pink"><div class="stat-label">TOTAL WITHDRAWN</div><div class="stat-value">$<span id="aWithdrawn">0.00</span></div><div class="muted" id="aWdCount">Completed</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Withdrawable</div><div class="stat-value">$<span id="aBalance">0.00</span></div></div>
+    <div class="stat"><div class="stat-label">Referral points</div><div class="stat-value" id="aRefPoints">0</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Reward points</div><div class="stat-value" id="aRewardPoints">0</div></div>
+    <div class="stat"><div class="stat-label">Referral income</div><div class="stat-value">$<span id="aRefIncome">0.0000</span></div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Pending withdrawal</div><div class="stat-value">$<span id="aPending">0.0000</span></div></div>
+    <div class="stat"><div class="stat-label">Friends invited</div><div class="stat-value" id="aFriends">0</div></div>
+  </div>
+
+  <div class="statgrid">
+    <div class="stat"><div class="stat-label">Valid friends</div><div class="stat-value" id="aValid">0</div></div>
+    <div></div>
+  </div>
+
+  <div class="card">
+    <b>⛏️ Deposit Mining</b>
+    <div class="row"><span>Deposited principal</span><b>$<span id="aDepositPrincipal">0.00</span></b></div>
+    <div class="row"><span>Daily rate</span><b>2.7%</b></div>
+    <div class="row"><span>Mining from deposits / day</span><b>$<span id="aDepositMiningDaily">0.0000</span></b></div>
+    <div class="notice">Deposited funds are added to Lumaqix Coins and are not directly withdrawable. Only mining earnings enter the withdrawable balance.</div>
+  </div>
+
+  <div class="menu">
+    <div class="menu-row" onclick="toggleTheme()"><div class="menu-icon">☾</div><div class="menu-title">Theme</div><div class="chev" id="themeText">Dark</div></div>
+    <div class="menu-row" onclick="go('history')"><div class="menu-icon">◴</div><div class="menu-title">Operations / History</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="showHelp()"><div class="menu-icon">ⓘ</div><div class="menu-title">Help & FAQ</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="openTelegram('https://t.me/LumaqixBot')"><div class="menu-icon">➤</div><div class="menu-title">Lumaqix Official</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="openTelegram('https://t.me/LumaqixBot')"><div class="menu-icon">➤</div><div class="menu-title">Lumaqix Payment</div><div class="chev">›</div></div>
+    <div class="menu-row" onclick="showSupport()"><div class="menu-icon">♧</div><div class="menu-title">Support</div><div class="chev">›</div></div>
+  </div>
+</section>
+
+<section id="history" class="screen">
+  <button class="back" onclick="go('account')">← Account</button>
+  <div class="title">Operations / History</div>
+  <div id="txList" class="card">Loading…</div>
+</section>
+
+<section id="deposit" class="screen">
+  <button class="back" onclick="go('trade')">← Back</button>
+  <div class="title">Top up USDT</div>
+  <div class="card">
+    <div class="muted">Minimum deposit: $0.10. Deposits go to Lumaqix Coins and generate 2.7%/day mining.</div>
+    <input id="damt" type="number" min="0" step="0.01" placeholder="USD amount">
+    <button class="btn blue" onclick="deposit()">Create Payment</button>
+    <div id="dres"></div>
+  </div>
+</section>
+
+<section id="withdraw" class="screen">
+  <button class="back" onclick="go('trade')">← Back</button>
+  <div class="title">Withdraw USDT</div>
+  <div class="card">
+    <div class="muted">Only your USD balance can be withdrawn. Points cannot be withdrawn.</div>
+    <input id="wamt" type="number" min="0" step="0.01" placeholder="USD amount">
+    <input id="waddr" placeholder="BSC / BEP-20 wallet address">
+    <button class="btn greenbtn" onclick="withdraw()">Submit Withdrawal</button>
+    <div id="wres"></div>
+  </div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <div class="navin">
+    <button id="ntrade" class="on" onclick="go('trade')"><span class="ico">◫</span>Trade</button>
+    <button id="nfriends" onclick="go('friends')"><span class="ico">♧</span>Friends</button>
+    <button id="nhome" onclick="go('home')"><span class="ico">⌂</span>Home</button>
+    <button id="nleaders" onclick="go('leaders')"><span class="ico">♕</span>Leaders</button>
+    <button id="nrewards" onclick="go('rewards')"><span class="ico">♧</span>Rewards</button>
+    <button id="naccount" onclick="go('account')"><span class="ico">♙</span>Account</button>
+  </div>
+</nav>
+
+<script>
+const tg=window.Telegram?.WebApp;
+tg?.ready();tg?.expand();
+const init=tg?.initData||'';
+const H={'Content-Type':'application/json','X-Telegram-Init-Data':init};
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toFixed(2);
+const num=n=>Number(n||0).toLocaleString();
+
+async function api(path,opts={}){
+  try{
+    const r=await fetch(path,{...opts,headers:{...H,...(opts.headers||{})}});
+    return await r.json();
+  }catch(e){return {ok:false,error:'Network error'}}
+}
+
+const navMap={trade:'ntrade',friends:'nfriends',home:'nhome',leaders:'nleaders',rewards:'nrewards',account:'naccount',history:'naccount',deposit:'ntrade',withdraw:'ntrade'};
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id)?.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
+  $(navMap[id])?.classList.add('on');
+  if(id==='account')loadAccount();
+  if(id==='history')loadTransactions();
+  if(id==='friends')loadReferral();
+  loadMe();
+  window.scrollTo(0,0);
+}
+
+function setProfile(u){
+  const name=(u.first_name||u.username||'User').trim();
+  const handle=u.username?'@'+u.username:'@user';
+  const id=u.id||'—';
+  $('tradeName').textContent=name;$('tradeUser').textContent=handle;
+  $('accountName').textContent=name;$('accountUser').innerHTML='Telegram ID: <span id="accountId">'+id+'</span>';
+  const initial=name.charAt(0).toUpperCase()||'L';
+  $('avatar').textContent=initial;$('accountAvatar').textContent=initial;
+  const photo=window.Telegram?.WebApp?.initDataUnsafe?.user?.photo_url;
+  if(photo){$('avatar').style.backgroundImage=`url("${photo}")`;$('avatar').style.backgroundSize='cover';$('avatar').textContent='';$('accountAvatar').style.backgroundImage=`url("${photo}")`;$('accountAvatar').style.backgroundSize='cover';$('accountAvatar').textContent='';}
+}
+
+async function loadMe(){
+  const x=await api('/api/me');
+  if(!x.ok)return;
+  const u=x.user||{};
+  setProfile(u);
+  const pts=num(u.points), coins=Number(u.coin_balance||u.points||50), power=Number(u.mining_power||0), daily=Number(u.mining_usd_per_day||0), dep=Number(u.deposit_total||0), depDaily=Number(u.deposit_mining_usd_per_day||0);
+  $('tradePoints').textContent=coins.toFixed(2);$('tradePower').textContent=power.toFixed(2);$('tradeRate').textContent=daily.toFixed(4);
+  $('tradeBal').textContent=money(u.balance);$('tradeDaily').textContent=daily.toFixed(2);
+  $('mPoints').textContent=pts;$('mPower').textContent=power.toFixed(2);$('mDaily').textContent=daily.toFixed(2);
+  $('homeBal').textContent=money(u.balance);$('homePoints').textContent=pts;$('homePts2').textContent=pts;$('homePower').textContent=power.toFixed(2);$('homeDaily').textContent=daily.toFixed(2);
+  $('rewardPoints').textContent=pts;
+}
+
+async function loadReferral(){
+  const x=await api('/api/referral');
+  if(!x.ok)return;
+  $('fCount').textContent=num(x.count);$('fEarn').textContent=money(x.earnings);$('fComm').textContent=(x.commission_percent||0)+'%';$('fLink').textContent=x.referral_link||'—';
+  $('aFriends').textContent=num(x.count);$('aRefIncome').textContent=Number(x.earnings||0).toFixed(4);$('aRefPoints').textContent=num(x.count);
+}
+
+async function loadAccount(){
+  const [me,st,ref,tx]=await Promise.all([api('/api/me'),api('/api/stats'),api('/api/referral'),api('/api/transactions')]);
+  if(me.ok){
+    const u=me.user||{}, pts=num(u.points), coins=Number(u.coin_balance||u.points||50), power=Number(u.mining_power||0), daily=Number(u.mining_usd_per_day||0), dep=Number(u.deposit_total||0), depDaily=Number(u.deposit_mining_usd_per_day||0);
+    setProfile(u);$('aPoints').textContent=coins.toFixed(2);$('aPower').textContent=power.toFixed(2);$('aDaily').textContent=daily.toFixed(4);$('aDepositCoins').textContent=dep.toFixed(2);$('aDepositDaily').textContent=depDaily.toFixed(4);$('aDepositPrincipal').textContent=dep.toFixed(2);$('aDepositMiningDaily').textContent=depDaily.toFixed(4);$('aBalance').textContent=money(u.balance);$('aRewardPoints').textContent=pts;
+  }
+  if(st.ok){
+    const s=st.stats||{};
+    $('aDeposited').textContent=money(s.deposits);$('aWithdrawn').textContent=money(s.withdrawn);
+    $('aDepCount').textContent='Completed deposits';$('aWdCount').textContent='Completed withdrawals';
+  }
+  if(ref.ok){
+    $('aFriends').textContent=num(ref.count);$('aRefIncome').textContent=Number(ref.earnings||0).toFixed(4);$('aRefPoints').textContent=num(ref.count);
+  }
+  if(tx.ok){
+    const pending=(tx.transactions||[]).filter(t=>String(t.type||'').toLowerCase().includes('withdraw')&&t.status==='pending').reduce((a,t)=>a+Number(t.amount||0),0);
+    $('aPending').textContent=pending.toFixed(4);
+    const valid=(ref.ok?Number(ref.count||0):0);
+    $('aValid').textContent=num(Math.max(0,valid));
+  }
+}
+
+async function claimDaily(){
+  const x=await api('/api/daily',{method:'POST',body:'{}'});
+  const msg=x.ok?`<div class="ok" style="margin-top:10px">+${num(x.reward_points||0)} Points 🎉</div>`:`<div class="warn" style="margin-top:10px">${x.remaining?'Already claimed for today.':(x.error||'Unavailable')}</div>`;
+  $('dailyMsg').innerHTML=msg;$('rewardMsg').innerHTML=msg;
+  loadMe();
+  if(document.getElementById('account').classList.contains('active'))loadAccount();
+}
+
+async function deposit(){
+  const x=await api('/api/deposit',{method:'POST',body:JSON.stringify({amount:$('damt').value})});
+  $('dres').innerHTML=x.ok
+    ? `<div class="notice">Send exactly <b>${x.payment.pay_amount} ${x.payment.pay_currency}</b><br>Address: <span style="word-break:break-all">${x.payment.pay_address}</span><br>Payment ID: ${x.payment.payment_id}<br><br>✓ After confirmation, this deposit will be added to your <b>Lumaqix Coins</b> and will generate <b>2.7%/day</b> deposit mining. It will not be added to withdrawable balance.</div>`
+    : `<div class="warn" style="margin-top:10px">${x.error||'Unable to create payment'}</div>`;
+}
+
+async function withdraw(){
+  const x=await api('/api/withdraw',{method:'POST',body:JSON.stringify({amount:$('wamt').value,address:$('waddr').value})});
+  $('wres').innerHTML=x.ok?`<div class="ok" style="margin-top:10px">Withdrawal ${x.status||'submitted'}.</div>`:`<div class="warn" style="margin-top:10px">${x.error||'Unable to submit withdrawal'}</div>`;
+  loadMe();
+}
+
+async function loadTransactions(){
+  const x=await api('/api/transactions');
+  if(!x.ok){$('txList').innerHTML='<div class="warn">'+(x.error||'Unable to load history')+'</div>';return}
+  const rows=x.transactions||[];
+  $('txList').innerHTML=rows.length?rows.map(t=>`<div class="row"><span><b>${t.type}</b><br><span class="muted">${t.status} · ${t.currency||''}</span></span><b>${money(t.amount)}</b></div>`).join(''):'<div class="muted">No transactions yet.</div>';
+}
+
+function copyReferral(){
+  const v=$('fLink').textContent;
+  navigator.clipboard?.writeText(v).then(()=>alert('Referral link copied')).catch(()=>alert(v));
+}
+function openTelegram(url){tg?.openTelegramLink?.(url)||window.open(url,'_blank')}
+function showHelp(){alert('Lumaqix Help & FAQ\\n\\nPoints are earned from rewards and are not withdrawable. Mining earnings are added to USD balance.')}
+function showSupport(){alert('Support: contact the Lumaqix support account configured by the administrator.')}
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  $('themeText').textContent=document.body.classList.contains('light')?'Light':'Dark';
+}
+loadMe();
+</script>
+</body>
+</html>
