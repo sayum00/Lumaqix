@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        .balance-box {
+            font-size: 28px;
+            font-weight: bold;
+            color: #38bdf8;
+            margin: 20px 0;
+        }
+        button {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:active { background: #0284c7; }
+        .ref-box {
+            margin-top: 20px;
+            background: #334155;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
 
+    <div class="container">
+        <h1 id="username">স্বাগতম!</h1>
+        <p>আপনার বর্তমান ব্যালেন্স</p>
+        <div class="balance-box" id="balance">0.00</div>
+        
+        <button onclick="claimToken()">বোনাস ক্লেইম করুন (+10)</button>
+
+        <div class="ref-box">
+            <p>আপনার রেফারেল লিংক:</p>
+            <span id="refLink">লোড হচ্ছে...</span>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const userId = tg.initDataUnsafe?.user?.id || 12345678;
+        const userName = tg.initDataUnsafe?.user?.first_name || "Guest User";
+
+        document.getElementById("username").innerText = `স্বাগতম, ${userName}!`;
+
+        fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ telegram_id: userId, username: userName })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("balance").innerText = data.balance;
+            document.getElementById("refLink").innerText = data.ref_link;
+        });
+
+        function claimToken() {
+            fetch('/api/claim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById("balance").innerText = data.new_balance;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
